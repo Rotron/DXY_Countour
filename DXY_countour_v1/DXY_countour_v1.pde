@@ -13,8 +13,9 @@ Plot plot;
 void setup() {
   //size(1200, 800);
   //size(1024,677);
-  size(600,418);
-  src = loadImage("deer.jpg");
+  //size(600,418);
+  size(600,800);
+  src = loadImage("andrew.jpg");
   
   //src.resize(0, round(src.height/2));
   opencv = new OpenCV(this, src);
@@ -24,7 +25,8 @@ void setup() {
   noFill();
   
   plot = new Plot();
-  //plot.init( this, 5 );
+  int port = Serial.list().length - 1;
+  //plot.init( this, port );
   machine = new ContourMachine();
 }
 
@@ -34,7 +36,7 @@ float blurry( float x ) {
 }
 
 boolean first = true;
-int len = 10;
+int len = 4;
 int x = 1;
 int y = 1;
 void draw() {
@@ -46,8 +48,12 @@ void draw() {
       delay(1000);
       background( 255 );
     }
+    
+    if ( plot.enabled ) {
+      //plot.plotter.selectPen( y );
+    }
     machine.draw_step( y, len, false );
     y++;
   }
-  delay( 10 );
+  delay( 1000 );
 }

@@ -1,11 +1,13 @@
 public class ContourMachine {
   public void draw_x_contours( int len ) {
-    
     for ( int x = 1; x < len; x++ ) {
       this.draw_step( x, len, false );
     }
   }
   public void draw_step( int x, int len, boolean debug_image ) {
+    if ( plot.enabled ) {
+      plot.plotter.selectPen( x );
+    }
     //strokeWeight( round( (len - x)) );
     // Reload the image
     PImage img = src.copy();
@@ -53,22 +55,35 @@ public class ContourMachine {
   }
   
   public void draw_contour( Contour contour ) {
+    PVector point;
+    PVector point2;
     ArrayList<PVector> points = contour.getPolygonApproximation().getPoints();
+    if ( plot.enabled ) {
+      delay( 250 );
+      point = points.get( 0 );
+      plot.moveTo( point );
+    }
     for ( int i = 0; i < points.size() - 1; i++ ) {
-      PVector point = points.get( i );
       int next = i + 1;
       if ( next >= points.size() ) {
         next-=points.size();
       }
-      PVector point2 = points.get( next );
+      // Get the points
+      point  = points.get( i );
+      point2 = points.get( next );
+      // Draw
       line( point.x, point.y, point2.x, point2.y );
-      
       
       //public int xMax = 9000;
       //public int yMax = 6402;
       if ( plot.enabled ) {
+        // Plot draw
         plot.line( point, point2 );
       }
+    }
+    
+    if ( plot.enabled ) {
+      plot.pu();
     }
   }
   
