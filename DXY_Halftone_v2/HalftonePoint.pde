@@ -7,6 +7,7 @@ class HalftonePoint {
   float segment_ratio = 0.15;
   
   ArrayList<Line> lines;
+  ArrayList<Line> inner_lines;
   
   HalftonePoint( float x, float y, float r ) {
     this.x = x;
@@ -15,11 +16,12 @@ class HalftonePoint {
   }
   
   void draw() {
-    this.lines = get_lines();
+    this.lines = this.get_lines();
+    this.lines = this.get_lines( -5 );
     this.drawCircle();
     this.drawFill();
     if ( random(0,100) > 90 ) {
-      this.drawFill( 90 );
+      //this.drawFill( 90 );
     }
   }
   
@@ -56,7 +58,7 @@ class HalftonePoint {
   }
   void drawFillLine( Line projected ) {
     ArrayList<PVector> vectors = new ArrayList();
-    for ( Line l : this.lines ) {
+    for ( Line l : this.inner_lines ) {
       PVector intersect = projected.intersect( l );
       if ( null == intersect ) {
         continue;
@@ -79,16 +81,20 @@ class HalftonePoint {
   }
   
   ArrayList<Line> get_lines() {
+    return get_lines(0);
+  }
+  ArrayList<Line> get_lines( float offset ) {
     ArrayList<Line> lines = new ArrayList();
     int segments = round( r * this.segment_ratio );
     for ( int i = 0; i < segments; i++ ) {
       float deg = 360.0 * i / segments;
       float deg_end = 360.0 * ( i + 1 ) / segments;
+      float dist = this.r + offset;
       lines.add( new Line(
-        this.x + sin(radians(deg)) * this.r,
-        this.y + cos(radians(deg)) * this.r,
-        this.x + sin(radians(deg_end)) * this.r,
-        this.y + cos(radians(deg_end)) * this.r
+        this.x + sin(radians(deg)) * dist,
+        this.y + cos(radians(deg)) * dist,
+        this.x + sin(radians(deg_end)) * dist,
+        this.y + cos(radians(deg_end)) * dist
        ) );
     }
     return lines;

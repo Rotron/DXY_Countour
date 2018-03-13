@@ -23,7 +23,9 @@ class Line {
     this.start = new PVector( x1, y1 );
     this.end = new PVector( x2, y2 );
   }
-  
+  Line copy() {
+    return new Line( start.copy(), end.copy() );
+  }
   PVector intersect( Line l2 ) {
     // calculate the distance to intersection point
     float uA = ((l2.end.x-l2.start.x)*(this.start.y-l2.start.y) - (l2.end.y-l2.start.y)*(this.start.x-l2.start.x)) / ((l2.end.y-l2.start.y)*(this.end.x-this.start.x) - (l2.end.x-l2.start.x)*(this.end.y-this.start.y));
@@ -34,10 +36,6 @@ class Line {
       return new PVector(this.start.x + (uA * (this.end.x-this.start.x)), this.start.y + (uA * (this.end.y-this.start.y)));
     }
     return null;
-  }
-  
-  void shrink( float percentage ) {
-    
   }
   
   void draw() {
