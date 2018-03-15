@@ -40,5 +40,8 @@ class Line {
   
   void draw() {
     line( start.x, start.y, end.x, end.y );
+    if ( plot.enabled ) {
+      plot.line( start, end );
+    }
   }
 }

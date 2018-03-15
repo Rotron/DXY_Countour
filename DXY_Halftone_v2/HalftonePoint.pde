@@ -4,7 +4,7 @@ class HalftonePoint {
   float r;
   float fill_spacing = 5;
   float angle = 120;
-  float segment_ratio = 0.15;
+  float segment_ratio = 0.35;
   
   ArrayList<Line> lines;
   ArrayList<Line> inner_lines;
@@ -17,7 +17,7 @@ class HalftonePoint {
   
   void draw() {
     this.lines = this.get_lines();
-    this.lines = this.get_lines( -5 );
+    this.inner_lines = this.get_lines( -5 );
     this.drawCircle();
     this.drawFill();
     if ( random(0,100) > 90 ) {
