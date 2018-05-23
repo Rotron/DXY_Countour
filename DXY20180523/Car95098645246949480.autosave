@@ -1,0 +1,25 @@
+class Car {
+  PVector pos; 
+  PVector velocity;
+  Plot plot;
+  float size = 5;
+  
+  /**
+   * Car
+   * @param PVector pos
+   * @param PVector velocity
+   */
+  Car( PVector pos ) {
+    this.pos = pos;
+  }
+  
+  void tick() {
+    
+  }
+
+  void draw() {
+    noStroke();
+    fill( 255, 120, 90 );
+    ellipse( pos.x, pos.y, size, size );
+  }
+}
