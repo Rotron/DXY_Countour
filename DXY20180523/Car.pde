@@ -5,8 +5,8 @@ class Car {
   PNField noise_field;
   int samples = 10;
   float range = 10;
-  float mod = 2;
-  float max_velocity = 5;
+  float mod = 0.2;
+  float max_velocity = 2;
   float size = 10;
   
   /**
@@ -57,12 +57,19 @@ class Car {
     if ( pos.y > height ) {
       pos.y -= height;
     }
+    
+    // v.normalize();
+    
+    // size*=10;
   }
 
 
   void draw() {
-    stroke( 150, 50, 0 );
-    fill( 255, 120, 90 );
-    ellipse( pos.x, pos.y, size, size );
+    //stroke( 150, 50, 0 );
+    fill( 0 );
+    PVector v = velocity.copy();
+    float s = v.x * v.x + v.y * v.y;
+    s *= size;
+    ellipse( pos.x, pos.y, s, s );
   }
 }
