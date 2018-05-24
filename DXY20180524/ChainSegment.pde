@@ -5,7 +5,7 @@ class ChainSegment {
   float w = 20;
   float h = 5;
   
-  float slack = 50;
+  float slack = 3;
   ChainSegment previous;
   ChainSegment next;
   
@@ -31,14 +31,14 @@ class ChainSegment {
     float _h = box2d.scalarPixelsToWorld(h/2);
     sd.setAsBox(_w, _h);
     
-    FixtureDef fd = new FixtureDef();
-    fd.shape = sd;
-    fd.density=100;
-    fd.friction=0.5;
-    fd.restitution=0.2;
+    FixtureDef fd  = new FixtureDef();
+    fd.shape       = sd;
+    fd.density     = 1;
+    fd.friction    = 0.2;
+    fd.restitution = 0.2;
     
     body.createFixture(fd);
-
+    // body.setLinearDamping(0.0005f);
     // Create the shape on the body
     //body.createShape( sd );
     //body.setMassFromShapes();
@@ -93,6 +93,9 @@ class ChainSegment {
   }
 
 
+  void tick() {
+
+  }
   void draw() {
     
     
