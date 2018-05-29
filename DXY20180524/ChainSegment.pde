@@ -5,13 +5,14 @@ class ChainSegment {
   float w = 20;
   float h = 5;
   
-  float slack = 3;
+  float slack = 5;
   ChainSegment previous;
   ChainSegment next;
   
   Body body;
   BodyDef bd;
   FixtureDef fd;
+  Fixture fixture;
   RopeJoint rope_joint;
   DistanceJoint dist_joint;
 
@@ -37,11 +38,7 @@ class ChainSegment {
     fd.friction    = 0.2;
     fd.restitution = 0.2;
     
-    body.createFixture(fd);
-    // body.setLinearDamping(0.0005f);
-    // Create the shape on the body
-    //body.createShape( sd );
-    //body.setMassFromShapes();
+    fixture = body.createFixture(fd);
   }
   
   void createRopeJoint() {
@@ -51,9 +48,7 @@ class ChainSegment {
     // Create the joint definition
     RopeJointDef jd = new RopeJointDef();
     jd.maxLength = box2d.scalarPixelsToWorld( slack );
-    // Vec2 b2Vec2_zero = new Vec2();
-    // jd.localAnchorA = b2Vec2_zero;
-    // jd.localAnchorB = b2Vec2_zero;
+
     // Connect the bodies
     jd.bodyA = previous.body;
     jd.bodyB = body;
@@ -67,19 +62,10 @@ class ChainSegment {
     if ( null == previous ) {
       return;
     }
-    
-    // Vec2 pos = box2d.getBodyPixelCoord(body);
-    // Vec2 previous_pos = box2d.getBodyPixelCoord(previous.body);
-    // b2DistanceJointDef distJDef;
-    // distJDef.Initialize(previous, body, anchor1, anchor2);
-    // distJDef.collideConnected = false;
-    // distJDef.dampingRatio = dampingRatio;
-    // distJDef.frequencyHz = frequencyHz;
-    // world->CreateJoint(&distJDef);
 
     // Create the joint definition
     DistanceJointDef jd = new DistanceJointDef();
-    jd.length = box2d.scalarPixelsToWorld( slack );
+    jd.length = box2d.scalarPixelsToWorld( slack * 5 );
     jd.collideConnected = false;
     jd.frequencyHz = 0;
     jd.dampingRatio = 0;
@@ -106,11 +92,38 @@ class ChainSegment {
     // Get its angle of rotation
     float a = body.getAngle();
 
+    Vec2 force = new Vec2();
+
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+
+    if ( null != rope_joint ) {
+      rope_joint.getReactionForce( 1 / dt, force );
+      red = round( force.length() );
+     if ( ! box2d.world.isLocked() && red > 2000 && null != rope_joint && null != dist_joint ) {
+       box2d.world.destroyJoint( rope_joint );
+       rope_joint = null;
+       box2d.world.destroyJoint( dist_joint );
+       dist_joint = null;
+     }
+     red = min( 255, red );
+    }
+    if ( null != rope_joint ) {
+      green = round( min( 255, rope_joint.getReactionTorque( 1 / dt ) ) );
+    }
+    if ( null != dist_joint ) {
+      dist_joint.getReactionForce( 1 / dt, force );
+      blue = round( min( 255, force.length() ) );
+    }
+
+
+
     rectMode(CENTER);
     pushMatrix();
     translate(pos.x,pos.y);
     rotate(-a);
-    fill(175);
+    fill(red,green,blue);
     stroke(0);
     rect(0,0,w,h);
     popMatrix();
@@ -121,8 +134,8 @@ class ChainSegment {
     }
     
     Vec2 previous_pos = box2d.getBodyPixelCoord(previous.body);
-    
-    line( pos.x, pos.y, previous_pos.x, previous_pos.y );
+    if ( null != rope_joint )
+      line( pos.x, pos.y, previous_pos.x, previous_pos.y );
     if ( null == next ) {
       ellipse( pos.x, pos.y, 10, 10 );
     }

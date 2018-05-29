@@ -22,6 +22,8 @@ Vec2 gravity = new Vec2( 0, -5 );
 AABB area;
 ForceField ff;
 
+float dt = 1.0f / 60f;
+
 void setup() {
   size(1200,800);
   box2d = new Box2DProcessing(this);
@@ -45,6 +47,7 @@ void mousePressed() {
   ChainSegment segment = new ChainSegment( mouseX, mouseY );
   if ( 0 == len ) {
     segment.body.setType( BodyType.STATIC );
+    //segment.body.destroyFixture( segment.fixture );
     chain.add( segment );
   } else {
     ChainSegment end = chain.get( len - 1 );
@@ -53,7 +56,7 @@ void mousePressed() {
     // Rope aligns the bodies in the correct angle
     segment.createRopeJoint();
     // Distance just keeps the bodies in a certain distance of each other
-    //segment.createDistJoint();
+    segment.createDistJoint();
     chain.add( segment );
   }
 }
@@ -87,7 +90,7 @@ void draw() {
   strokeWeight( 50 );
   stroke( 255,255,0, 50 );
   noFill();
-  println(lower.x +","+ upper.y +","+ (upper.x-lower.x) +","+ (lower.y-upper.y));
+  // println(lower.x +","+ upper.y +","+ (upper.x-lower.x) +","+ (lower.y-upper.y));
   rect( lower.x, upper.y, upper.x-lower.x, lower.y-upper.y );
   noStroke();
   strokeWeight( 1 );
