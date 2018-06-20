@@ -25,7 +25,7 @@ AABB area;
 ForceField ff;
 
 float dt = 1.0f / 60f;
-Serial serial_port;
+SerialInput serial;
 void setup() {
   size(1200,800);
   box2d = new Box2DProcessing(this);
@@ -43,9 +43,7 @@ void setup() {
   area = new AABB( lower, upper );
   ff = new ForceField( width/2, height/2, 100 );
   
-  int last = Serial.list().length - 1;
-  String portName = Serial.list()[last];
-  serial_port = new Serial(this, portName, 9600);
+  serial = new SerialInput( this, 9600 );
 }
 
 void mousePressed() {
@@ -68,24 +66,15 @@ void mousePressed() {
 }
  
 void draw() {
-  if ( serial_port.available() > 0) {  // If data is available,
-    String val = trim( serial_port.readStringUntil(10) );         // read it and store it in val
-    if (val != null) {
-      //println( val );
-      String parts[] = split( val, ":" );
-      //println( (Object[]) parts );
-      //println( parts[0].substring(0,1) );
-      if ( "E".equals( parts[0].substring(0,1) ) ) {
-        print( "Encoder no. " );
-        print( parts[0].substring(1) );
-        print( ": " );
-        println( parts[1] );
-      }
-    }
+  serial.listen();
+  if ( serial.changed ) {
+    ff.setPos( serial.encoders[0] * 10, serial.encoders[1] * 10 );
+    //println( serial.encoders );
   }
+  
   background(255);
   box2d.step();
-  
+
 
   for ( int i = 0; i < chain.size(); i++ ) {
     ChainSegment link = chain.get(i);

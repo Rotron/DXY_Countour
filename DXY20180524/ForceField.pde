@@ -4,6 +4,7 @@ class ForceField {
   
   // We need to keep track of a Body and a radius
   Body body;
+  Fixture fixture;
   float r;
 
   ForceField( float x, float y, float r) {
@@ -17,7 +18,11 @@ class ForceField {
     // Make the body's shape a circle
     CircleShape cs = new CircleShape();
     cs.m_radius = box2d.scalarPixelsToWorld(r);
-    body.createFixture(cs,1);
+    fixture = body.createFixture(cs,1);
+  }
+
+  void setPos( int x, int y ) {
+    body.setTransform( box2d.coordPixelsToWorld(x,y), 0 );
   }
 
   // Formula for gravitational attraction
